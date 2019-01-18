@@ -47,7 +47,21 @@ class SignatureMapProvider
 				throw new \PHPStan\ShouldNotHappenException('Signature map could not be loaded.');
 			}
 
-			self::$signatureMap = $signatureMap;
+			$normalizedSignatureMap = [];
+
+            foreach ($signatureMap as $key => $value) {
+                $scopeOpPosition = strpos($key, '::');
+			    if ($scopeOpPosition === false) {
+                    $normalizedSignatureMap[$key] = $value;
+                    continue;
+                }
+                $classname = substr($key, 0, $scopeOpPosition);
+			    $methodName = substr($key, $scopeOpPosition + 2);
+			    $newKey = $classname . '::' . strtolower($methodName);
+                $normalizedSignatureMap[$newKey] = $value;
+            }
+
+			self::$signatureMap = $normalizedSignatureMap;
 		}
 
 		return self::$signatureMap;
