@@ -208,8 +208,7 @@ class ClassReflection implements DeprecatableReflection, InternableReflection, F
 			$key = sprintf('%s-%s', $key, $scope->getClassReflection()->getName());
 		}
 
-        $normalizedKey = strtolower($key);
-
+		$normalizedKey = strtolower($key);
 		if (!isset($this->methods[$normalizedKey])) {
 			foreach ($this->methodsClassReflectionExtensions as $extension) {
 				if (!$extension->hasMethod($this, $methodName)) {
