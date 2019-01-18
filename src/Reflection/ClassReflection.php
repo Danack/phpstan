@@ -207,7 +207,10 @@ class ClassReflection implements DeprecatableReflection, InternableReflection, F
 		if ($scope->isInClass()) {
 			$key = sprintf('%s-%s', $key, $scope->getClassReflection()->getName());
 		}
-		if (!isset($this->methods[$key])) {
+
+        $normalizedKey = strtolower($key);
+
+		if (!isset($this->methods[$normalizedKey])) {
 			foreach ($this->methodsClassReflectionExtensions as $extension) {
 				if (!$extension->hasMethod($this, $methodName)) {
 					continue;
@@ -215,18 +218,18 @@ class ClassReflection implements DeprecatableReflection, InternableReflection, F
 
 				$method = $extension->getMethod($this, $methodName);
 				if ($scope->canCallMethod($method)) {
-					return $this->methods[$key] = $method;
+					return $this->methods[$normalizedKey] = $method;
 				}
-				$this->methods[$key] = $method;
+				$this->methods[$normalizedKey] = $method;
 			}
 		}
 
-		if (!isset($this->methods[$key])) {
+		if (!isset($this->methods[$normalizedKey])) {
 			$filename = $this->getFileName();
 			throw new \PHPStan\Reflection\MissingMethodFromReflectionException($this->getName(), $methodName, $filename !== false ? $filename : null);
 		}
 
-		return $this->methods[$key];
+		return $this->methods[$normalizedKey];
 	}
 
 	public function hasNativeMethod(string $methodName): bool
