@@ -25,6 +25,30 @@ class InvalidIncDecOperationRuleTest extends \PHPStan\Testing\RuleTestCase
 				'Cannot use ++ on stdClass.',
 				17,
 			],
+			[
+				'Cannot use ++ on bool.',
+				18,
+			],
+			[
+				'Cannot use -- on bool.',
+				19,
+			],
+			[
+				'Cannot use ++ on bool.',
+				20,
+			],
+			[
+				'Cannot use -- on bool.',
+				21,
+			],
+			[
+				'Should not use ++ on null.',
+				24,
+			],
+			[
+				'Should not use -- on null.',
+				26,
+			],
 		]);
 	}
 

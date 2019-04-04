@@ -55,13 +55,39 @@ class InvalidIncDecOperationRule implements \PHPStan\Rules\Rule
 
 		if (!$this->checkThisOnly) {
 			$varType = $scope->getType($node->var);
+
+			// Forbid inc/dec on booleans
+			if ($varType instanceof \PHPStan\Type\BooleanType) {
+				return [
+					sprintf(
+						'Cannot use %s on %s.',
+						$operatorString,
+						$varType->describe(VerbosityLevel::value())
+					),
+				];
+			}
+
+			// Forbid inc/dec on nulls
+			if ($varType instanceof \PHPStan\Type\NullType) {
+				return [
+					sprintf(
+						'Should not use %s on %s.',
+						$operatorString,
+						$varType->describe(VerbosityLevel::value())
+					),
+				];
+			}
+
+			// Allow inc/dec on strings
 			if (!$varType->toString() instanceof ErrorType) {
 				return [];
 			}
+			// Allow inc/dec on numbers
 			if (!$varType->toNumber() instanceof ErrorType) {
 				return [];
 			}
 
+			// All other types are forbidden
 			return [
 				sprintf(
 					'Cannot use %s on %s.',
